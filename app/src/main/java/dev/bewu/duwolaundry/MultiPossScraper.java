@@ -30,11 +30,11 @@ public class MultiPossScraper {
 
     private String userBalance = null;
 
-    public MultiPossScraper(String email, String password) {
+    public MultiPossScraper(String email, String password, String multipossURL) {
         this.phpSessionID = "";
         this.userEmail = email;
         this.userPass = password;
-        this.multipossURL = "https://duwo.multiposs.nl";
+        this.multipossURL = multipossURL;
     }
 
     /*

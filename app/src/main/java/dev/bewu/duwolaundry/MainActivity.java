@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,7 +74,12 @@ public class MainActivity extends AppCompatActivity {
 
         executor.execute(() -> {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            scraper = new MultiPossScraper(preferences.getString("userMail", ""), preferences.getString("userPwd", ""));
+            Log.d("MainActivity", "multipossURL: " + preferences.getString("multipossURL", ""));
+            scraper = new MultiPossScraper(
+                    preferences.getString("userMail", ""),
+                    preferences.getString("userPwd", ""),
+                    preferences.getString("multipossURL", "https://duwo.multiposs.nl")
+            );
 
             scraper.initScraper();
             HashMap<String, Integer> availability = scraper.getAvailability();
@@ -84,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
                 TextView statusText = findViewById(R.id.statusTextView);
                 TextView balanceValueText = findViewById(R.id.balanceValue);
+                View balanceLayout = findViewById(R.id.balanceLayout);
 
                 if (statusText == null)
                     return;
@@ -99,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
                 if (!avString.isEmpty()) {
                     statusText.setText(avString);
                     balanceValueText.setText(scraper.getUserBalance());
+                    if (scraper.getUserBalance() != null) {
+                        balanceLayout.setVisibility(View.VISIBLE);
+                    }
                     setQRCode(qr);
 
                     Toast.makeText(getApplicationContext(),

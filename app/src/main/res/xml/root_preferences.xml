@@ -3,6 +3,12 @@
     <PreferenceCategory app:title="Multiposs account">
 
         <EditTextPreference
+            app:key="multipossURL"
+            app:title="Multiposs URL"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="https://duwo.multiposs.nl" />
+
+        <EditTextPreference
             app:key="userMail"
             app:title="Multiposs Email"
             app:useSimpleSummaryProvider="true" />

@@ -56,6 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appTitleLabel">
@@ -71,7 +72,7 @@
             android:id="@+id/balanceValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loading" />
+            android:text="@string/dots" />
 
         <TextView
             android:id="@+id/euroText"

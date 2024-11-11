@@ -37,4 +37,6 @@
     <string name="error_while_fetching_status">Error while fetching status</string>
     <string name="balance">Balance:</string>
     <string name="euro">€</string>
+
+    <string name="dots">…</string>
 </resources>
