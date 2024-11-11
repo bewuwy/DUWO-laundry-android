@@ -1,0 +1,44 @@
+[versions]
+agp = "8.7.2"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+activity = "1.9.3"
+constraintlayout = "2.2.0"
+jsoup = "1.18.1"
+okhttp = "4.12.0"
+okhttps = "*"
+okhttpsVersion = "4.12.0"
+squareupOkhttps = "3.14.9"
+zxingAndroidEmbedded = "4.3.0"
+preference = "1.2.1"
+lifecycleLivedataKtx = "2.8.7"
+lifecycleViewmodelKtx = "2.8.7"
+navigationFragment = "2.8.3"
+navigationUi = "2.8.3"
+
+[libraries]
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttps = { group = "com.squareup.okhttp3", name = "okhttps", version.ref = "okhttps" }
+okhttp4-okhttps = { group = "com.squareup.okhttp4", name = "okhttps", version.ref = "okhttpsVersion" }
+okhttp3-okhttps = { group = "com.squareup.okhttp3", name = "okhttps", version.ref = "squareupOkhttps" }
+zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
+preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+
