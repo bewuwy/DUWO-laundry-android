@@ -1,10 +1,10 @@
 package dev.bewu.duwolaundry;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +20,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    MultiPossScraper scraper = new MultiPossScraper("user@mail.com", "password");
+    private MultiPossScraper scraper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_settings)
                 .setOpenableLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main_activity_nav_drawer);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main_activity);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
@@ -70,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
-            //Background work here
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            scraper = new MultiPossScraper(preferences.getString("userMail", ""), preferences.getString("userPwd", ""));
 
             scraper.initScraper();
             HashMap<String, Integer> availability = scraper.getAvailability();
@@ -91,12 +93,17 @@ public class MainActivity extends AppCompatActivity {
                             .append(availability.get(machine)).append("\n");
                 }
 
-                textView.setText(availabilityString.toString());
+                String avString = availabilityString.toString();
 
-                setQRCode(qr);
+                if (!avString.isEmpty()) {
+                    textView.setText(avString);
+                    setQRCode(qr);
 
-                Toast.makeText(getApplicationContext(),
-                        "Refreshed successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Refreshed successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    textView.setText(R.string.error_while_fetching_status);
+                }
             });
         });
     }
@@ -117,15 +124,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_activity__nav_drawer, menu);
-        return true;
-    }
-
-    @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main_activity_nav_drawer);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main_activity);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
