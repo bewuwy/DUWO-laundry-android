@@ -66,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
 
         // update availability for the 1st time
         updateAvailability();
+
+        ImageView qrPass = findViewById(R.id.qrPass);
+        ImageView qrPassEnlarged = findViewById(R.id.qrPass_expanded);
+        qrPass.setOnClickListener(view -> {
+            qrPassEnlarged.setVisibility(View.VISIBLE);
+        });
+
+        qrPassEnlarged.setOnClickListener(view -> {
+            qrPassEnlarged.setVisibility(View.INVISIBLE);
+        });
     }
 
     public void updateAvailability() {
@@ -127,7 +137,10 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE,
                     640, 640);
             ImageView qrCodeView = findViewById(R.id.qrPass);
+            ImageView qrPassEnlarged = findViewById(R.id.qrPass_expanded);
+
             qrCodeView.setImageBitmap(bitmap); // Sets the Bitmap to ImageView
+            qrPassEnlarged.setImageBitmap(bitmap);
         }
         catch (WriterException e) {
             Toast.makeText(getApplicationContext(),

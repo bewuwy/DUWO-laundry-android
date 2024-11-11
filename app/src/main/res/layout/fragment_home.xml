@@ -50,6 +50,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/statusTextView" />
 
+    <ImageView
+        android:id="@+id/qrPass_expanded"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/qr_code_to_scan"
+        android:visibility="invisible"
+        tools:visibility="visible" />
+
+
     <LinearLayout
         android:id="@+id/balanceLayout"
         android:layout_width="wrap_content"
