@@ -2,7 +2,7 @@
     <string name="app_name">DUWO laundry</string>
     <string name="duwo_laundry_title">DUWO Laundry</string>
     <string name="refresh">Refresh</string>
-    <string name="current_status">Current status:</string>
+    <string name="current_status">Available:</string>
     <string name="loading">Loading…</string>
     <string name="qr_code_to_scan">QR code to scan</string>
     <string name="settings">Settings</string>
@@ -35,4 +35,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="error_while_fetching_status">Error while fetching status</string>
+    <string name="balance">Balance:</string>
+    <string name="euro">€</string>
 </resources>

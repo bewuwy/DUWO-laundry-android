@@ -82,9 +82,10 @@ public class MainActivity extends AppCompatActivity {
             handler.post(() -> {
                 //UI Thread work here
 
-                TextView textView = findViewById(R.id.statusTextView);
+                TextView statusText = findViewById(R.id.statusTextView);
+                TextView balanceValueText = findViewById(R.id.balanceValue);
 
-                if (textView == null)
+                if (statusText == null)
                     return;
 
                 StringBuilder availabilityString = new StringBuilder();
@@ -96,13 +97,14 @@ public class MainActivity extends AppCompatActivity {
                 String avString = availabilityString.toString();
 
                 if (!avString.isEmpty()) {
-                    textView.setText(avString);
+                    statusText.setText(avString);
+                    balanceValueText.setText(scraper.getUserBalance());
                     setQRCode(qr);
 
                     Toast.makeText(getApplicationContext(),
                             "Refreshed successfully!", Toast.LENGTH_SHORT).show();
                 } else {
-                    textView.setText(R.string.error_while_fetching_status);
+                    statusText.setText(R.string.error_while_fetching_status);
                 }
             });
         });

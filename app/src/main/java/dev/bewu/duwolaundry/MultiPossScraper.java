@@ -23,9 +23,12 @@ import java.util.regex.Pattern;
 public class MultiPossScraper {
 
     private String phpSessionID;
+    private String siteID = "INCORRECT_SITE_ID";
     private final String userEmail;
     private final String userPass;
     private final String multipossURL;
+
+    private String userBalance = null;
 
     public MultiPossScraper(String email, String password) {
         this.phpSessionID = "";
@@ -44,6 +47,10 @@ public class MultiPossScraper {
         getAvailability():
         4. Fetch availability - GET https://duwo.multiposs.nl/MachineAvailability.php
      */
+
+    public String getUserBalance() {
+        return userBalance;
+    }
 
     public void initScraper() {
         getPHPSession();
@@ -153,7 +160,7 @@ public class MultiPossScraper {
 
         // the multiposs id does not matter, as the building is determined by your account
         String reqUrl = String.format("%s/StartSite.php?ID=%s&UserID=%s",
-                this.multipossURL, "SOME_RANDOM_ID", this.userEmail);
+                this.multipossURL, this.siteID, this.userEmail);
 
         OkHttpClient client = new OkHttpClient();
 
@@ -164,9 +171,19 @@ public class MultiPossScraper {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            if (response.code() != 302) {
+            if (response.code() != 302 && response.code() != 200) {
                 couldNotConnect("initMultiposs: wrong response code " + response.code());
                 return;
+            }
+
+            assert response.body() != null;
+            Document doc = Jsoup.parse(response.body().string());
+
+            Element credits = doc.getElementById("LblUserCredits");
+            if (credits != null) {
+                String balanceString = credits.text();
+                System.out.println("User balance: " + balanceString);
+                this.userBalance = balanceString;
             }
 
             System.out.println("Initialised multiposs page");
@@ -201,7 +218,25 @@ public class MultiPossScraper {
                 return;
             }
 
-            System.out.println("Logged in successfully");
+            assert response.body() != null;
+            String responseBody = response.body().string();
+
+            if (responseBody.contains("username and/or password<br>incorrect")) {
+                Log.d("MultipossScraper", "Logged in with incorrect password");
+                return;
+            }
+
+            System.out.println("Logged in successfully with correct password");
+
+            Pattern pattern = Pattern.compile("\\.\\./StartSite\\.php\\?ID=(.+)&");
+            Matcher matcher = pattern.matcher(responseBody);
+
+            if (matcher.find()) {
+                this.siteID = matcher.group(1);
+                Log.d("MultipossScraper", "loginMultiposs: Set site id");
+            } else {
+                Log.d("MultipossScraper", "loginMultiposs: Could not find site id: " + responseBody);
+            }
 
         } catch (IOException e) {
             couldNotConnect("loginMultiposs: " + e);
