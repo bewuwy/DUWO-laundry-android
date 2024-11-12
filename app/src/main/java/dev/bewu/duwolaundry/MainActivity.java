@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
                         preferences.getString("multipossURL", "https://duwo.multiposs.nl")
                 );
                 ((LaundryApplication) this.getApplication()).setMultiPossScraper(scraper);
-
-                scraper.initScraper();
             }
 
             HashMap<String, Integer> availability = scraper.fetchAvailability();

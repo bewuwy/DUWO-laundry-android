@@ -259,6 +259,8 @@ public class MultiPossScraper {
             if (matcher.find()) {
                 this.siteID = matcher.group(1);
                 Log.d("MultipossScraper", "loginMultiposs: Set site id");
+            } else if (responseBody.contains("Locked after too many login attempts")) {
+                Log.d("MultipossScraper", "loginMultiposs: Locked after too many incorrect login attempts");
             } else {
                 Log.d("MultipossScraper", "loginMultiposs: Could not find site id: " + responseBody);
             }
