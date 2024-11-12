@@ -31,6 +31,8 @@ public class MultiPossScraper {
     private String userBalance = null;
     private String userLocation = null;
 
+    private boolean forceReInit = true;
+
     public MultiPossScraper(String email, String password, String multipossURL) {
         this.phpSessionID = "";
         this.userEmail = email;
@@ -61,11 +63,14 @@ public class MultiPossScraper {
         return userLocation;
     }
 
+    public void setForceReInit(boolean forceReInit) {
+        this.forceReInit = forceReInit;
+    }
+
     public void initScraper() {
         getPHPSession();
         loginMultiposs();
         initMultiposs();
-
     }
 
     public String getQRCode() {
@@ -106,11 +111,21 @@ public class MultiPossScraper {
         }
     }
 
+    public HashMap<String, Integer> fetchAvailability() {
+        if (forceReInit) {
+            this.initScraper();
+            forceReInit = false;
+        }
+
+        return this.getAvailability();
+    }
+
     /**
      * (4) Final step in fetching availability
      * @return HashMap of Machine->Number of available
      */
-    public HashMap<String, Integer> getAvailability() {
+    private HashMap<String, Integer> getAvailability() {
+
         HashMap<String, Integer> availability = new HashMap<>();
 
         OkHttpClient client = new OkHttpClient();

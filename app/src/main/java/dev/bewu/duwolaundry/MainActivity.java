@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 scraper.initScraper();
             }
 
-            HashMap<String, Integer> availability = scraper.getAvailability();
+            HashMap<String, Integer> availability = scraper.fetchAvailability();
 
             String qr = scraper.getQRCode();
 
