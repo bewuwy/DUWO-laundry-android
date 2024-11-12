@@ -29,6 +29,7 @@ public class MultiPossScraper {
     private final String multipossURL;
 
     private String userBalance = null;
+    private String userLocation = null;
 
     public MultiPossScraper(String email, String password, String multipossURL) {
         this.phpSessionID = "";
@@ -50,6 +51,14 @@ public class MultiPossScraper {
 
     public String getUserBalance() {
         return userBalance;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public String getUserLocation() {
+        return userLocation;
     }
 
     public void initScraper() {
@@ -132,6 +141,7 @@ public class MultiPossScraper {
                 String location = el.child(0).text();
                 if (i == 1) {
                     System.out.println(location);
+                    this.userLocation = location;
                 }
                 machineType = machineType.replace("Mach.", "Machine");
                 String status = el.child(2).text();

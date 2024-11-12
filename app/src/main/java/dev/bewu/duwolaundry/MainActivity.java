@@ -96,6 +96,12 @@ public class MainActivity extends AppCompatActivity {
                 TextView statusText = findViewById(R.id.statusTextView);
                 TextView balanceValueText = findViewById(R.id.balanceValue);
                 View balanceLayout = findViewById(R.id.balanceLayout);
+                TextView userBigText = findViewById(R.id.userBigText);
+                TextView userSmallText = findViewById(R.id.userSmallText);
+
+                userBigText.setText(String.format("%s %s",
+                        getString(R.string.multiposs), finalScraper.getUserLocation()));
+                userSmallText.setText(finalScraper.getUserEmail());
 
                 if (statusText == null)
                     return;
