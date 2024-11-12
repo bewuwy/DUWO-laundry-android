@@ -1,5 +1,0 @@
-- name: build apk
-  uses: sparkfabrik/android-build-action@v1.5.0
-  with:
-    project-path: "app"
-    output-path: laundry.apk
