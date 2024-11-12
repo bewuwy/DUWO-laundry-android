@@ -66,16 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
         // update availability for the 1st time
         updateAvailability();
-
-        ImageView qrPass = findViewById(R.id.qrPass);
-        ImageView qrPassEnlarged = findViewById(R.id.qrPass_expanded);
-        qrPass.setOnClickListener(view -> {
-            qrPassEnlarged.setVisibility(View.VISIBLE);
-        });
-
-        qrPassEnlarged.setOnClickListener(view -> {
-            qrPassEnlarged.setVisibility(View.INVISIBLE);
-        });
     }
 
     public void updateAvailability() {
