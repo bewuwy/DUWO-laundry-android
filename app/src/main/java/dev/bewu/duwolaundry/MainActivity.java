@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    private MultiPossScraper scraper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +61,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main_activity);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-        // update availability for the 1st time
-        updateAvailability();
     }
 
     public void updateAvailability() {
@@ -75,17 +70,26 @@ public class MainActivity extends AppCompatActivity {
         executor.execute(() -> {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             Log.d("MainActivity", "multipossURL: " + preferences.getString("multipossURL", ""));
-            scraper = new MultiPossScraper(
-                    preferences.getString("userMail", ""),
-                    preferences.getString("userPwd", ""),
-                    preferences.getString("multipossURL", "https://duwo.multiposs.nl")
-            );
 
-            scraper.initScraper();
+            MultiPossScraper scraper = ((LaundryApplication) this.getApplication()).getMultiPossScraper();
+
+            if (scraper == null) {
+                // initialise scraper
+                scraper = new MultiPossScraper(
+                        preferences.getString("userMail", ""),
+                        preferences.getString("userPwd", ""),
+                        preferences.getString("multipossURL", "https://duwo.multiposs.nl")
+                );
+                ((LaundryApplication) this.getApplication()).setMultiPossScraper(scraper);
+
+                scraper.initScraper();
+            }
+
             HashMap<String, Integer> availability = scraper.getAvailability();
 
             String qr = scraper.getQRCode();
 
+            MultiPossScraper finalScraper = scraper;
             handler.post(() -> {
                 //UI Thread work here
 
@@ -106,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!avString.isEmpty()) {
                     statusText.setText(avString);
-                    balanceValueText.setText(scraper.getUserBalance());
-                    if (scraper.getUserBalance() != null) {
+                    balanceValueText.setText(finalScraper.getUserBalance());
+                    if (finalScraper.getUserBalance() != null) {
                         balanceLayout.setVisibility(View.VISIBLE);
                     }
                     setQRCode(qr);
