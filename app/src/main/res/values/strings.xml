@@ -41,4 +41,6 @@
 
     <string name="dots">…</string>
     <string name="multiposs">Multiposs</string>
+    <string name="watch_for_availability_updates">Watch for availability updates</string>
+    <string name="start">Start</string>
 </resources>

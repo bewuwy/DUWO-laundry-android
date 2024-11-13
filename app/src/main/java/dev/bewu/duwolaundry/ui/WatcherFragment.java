@@ -1,13 +1,28 @@
 package dev.bewu.duwolaundry.ui;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import dev.bewu.duwolaundry.LaundryApplication;
+import dev.bewu.duwolaundry.MultiPossScraper;
 import dev.bewu.duwolaundry.R;
 
 /**
@@ -17,44 +32,56 @@ import dev.bewu.duwolaundry.R;
  */
 public class WatcherFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private final String CHANNEL_ID = "DUWO_Laundry_Channel";
+    private int notificationNumber = 1;
 
     public WatcherFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment WatcherFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static WatcherFragment newInstance(String param1, String param2) {
-        WatcherFragment fragment = new WatcherFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static WatcherFragment newInstance() {
+        return new WatcherFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Button startButton = requireActivity().findViewById(R.id.watcherStartButton);
+        LaundryApplication app = (LaundryApplication) requireActivity().getApplication();
+        MultiPossScraper scraper = app.getMultiPossScraper();
+
+        startButton.setOnClickListener(v -> {
+            Log.d("Laundry Watcher", "watcher started");
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+
+            executor.execute(() -> {
+                HashMap<String, Integer> availability = scraper.fetchAvailability();
+
+                createNotificationChannel();
+
+                // create notification
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setContentTitle("DUWO Laundry")
+                        .setContentText(availability.toString())
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+                // send notification
+                NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(notificationNumber, builder.build());
+                // notificationNumber++; // don't update - then the old notification will be updated
+            });
+        });
     }
 
     @Override
@@ -62,5 +89,22 @@ public class WatcherFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_watcher, container, false);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Laundry notifications";
+            String description = "Laundry notifications description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this.
+            assert getContext() != null;
+            NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
