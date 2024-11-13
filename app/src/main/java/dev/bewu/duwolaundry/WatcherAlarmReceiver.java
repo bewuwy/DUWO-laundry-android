@@ -26,7 +26,6 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "Alarm went off", Toast.LENGTH_SHORT).show();
         Log.d("Watcher Alarm", "Alarm went off");
 
         ExecutorService executor = Executors.newSingleThreadExecutor();

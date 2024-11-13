@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -61,17 +63,29 @@ public class WatcherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Button startButton = requireActivity().findViewById(R.id.watcherStartButton);
+        Button stopButton = requireActivity().findViewById(R.id.watcherStopButton);
+
+        Intent intent = new Intent(getContext(), WatcherAlarmReceiver.class);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         startButton.setOnClickListener(v -> {
             AlarmManager alarmMgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
-
-            Intent intent = new Intent(getContext(), WatcherAlarmReceiver.class);
-            PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
             // set up the update alarm - every 1 minute
             alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                     5000, 60000, alarmIntent);
             Log.d("Laundry Watcher", "watcher started");
+            Toast.makeText(getContext(), "Watcher started", Toast.LENGTH_SHORT).show();
+        });
+
+        stopButton.setOnClickListener(v -> {
+            AlarmManager alarmMgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+
+            if (alarmMgr!= null) {
+                alarmMgr.cancel(alarmIntent);
+                Log.d("Laundry Watcher", "watcher stopped");
+                Toast.makeText(getContext(), "Watcher stopped", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
