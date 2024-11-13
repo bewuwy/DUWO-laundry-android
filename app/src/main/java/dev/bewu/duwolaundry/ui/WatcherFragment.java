@@ -1,8 +1,11 @@
 package dev.bewu.duwolaundry.ui;
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +28,7 @@ import java.util.concurrent.Executors;
 import dev.bewu.duwolaundry.LaundryApplication;
 import dev.bewu.duwolaundry.MultiPossScraper;
 import dev.bewu.duwolaundry.R;
+import dev.bewu.duwolaundry.WatcherAlarmReceiver;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +38,7 @@ import dev.bewu.duwolaundry.R;
 public class WatcherFragment extends Fragment {
 
     private final String CHANNEL_ID = "DUWO_Laundry_Channel";
-    private int notificationNumber = 1;
+    private final int notificationNumber = 1;
 
     public WatcherFragment() {
         // Required empty public constructor
@@ -56,31 +61,17 @@ public class WatcherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Button startButton = requireActivity().findViewById(R.id.watcherStartButton);
-        LaundryApplication app = (LaundryApplication) requireActivity().getApplication();
-        MultiPossScraper scraper = app.getMultiPossScraper();
 
         startButton.setOnClickListener(v -> {
+            AlarmManager alarmMgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+
+            Intent intent = new Intent(getContext(), WatcherAlarmReceiver.class);
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+            // set up the update alarm - every 1 minute
+            alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    5000, 60000, alarmIntent);
             Log.d("Laundry Watcher", "watcher started");
-
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-
-            executor.execute(() -> {
-                HashMap<String, Integer> availability = scraper.fetchAvailability();
-
-                createNotificationChannel();
-
-                // create notification
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle("DUWO Laundry")
-                        .setContentText(availability.toString())
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-                // send notification
-                NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(notificationNumber, builder.build());
-                // notificationNumber++; // don't update - then the old notification will be updated
-            });
         });
     }
 
@@ -89,22 +80,5 @@ public class WatcherFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_watcher, container, false);
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is not in the Support Library.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Laundry notifications";
-            String description = "Laundry notifications description";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this.
-            assert getContext() != null;
-            NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 }
