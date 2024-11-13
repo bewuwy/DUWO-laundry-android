@@ -7,7 +7,6 @@
     <string name="qr_code_to_scan">QR code to scan</string>
     <string name="settings">Settings</string>
     <!-- Settings Activity Title -->
-    <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -23,17 +22,9 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="title_activity_main_nav_drawer">MainActivity_NavDrawer</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
     <string name="menu_watcher">Watcher</string>
     <string name="error_while_fetching_status">Error while fetching status</string>
     <string name="balance">Balance:</string>
@@ -44,7 +35,4 @@
     <string name="watch_for_availability_updates">Watch for availability updates</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
-    <string name="status">Status:</string>
-    <string name="running">running</string>
-    <string name="not_running">not running</string>
 </resources>
