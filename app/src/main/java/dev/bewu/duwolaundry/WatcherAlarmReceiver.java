@@ -36,11 +36,26 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
 
             createNotificationChannel(context);
 
+            StringBuilder notificationStringBuilder = new StringBuilder();
+            for (String key: availability.keySet()) {
+                notificationStringBuilder.append(availability.get(key)).append(" ").append(key);
+
+                if (availability.get(key) != 1) {
+                    notificationStringBuilder.append("s, ");
+                } else {
+                    notificationStringBuilder.append(", ");
+                }
+            }
+
+            // remove last ", "
+            String notificationString = notificationStringBuilder.toString();
+            notificationString = notificationString.substring(0, notificationString.length()-2);
+
             // create notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setSmallIcon(R.drawable.laundry_24)
                     .setContentTitle("DUWO Laundry")
-                    .setContentText(availability.toString())
+                    .setContentText(notificationString)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
             // send notification
@@ -51,19 +66,15 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
     }
 
     private void createNotificationChannel(Context context) {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is not in the Support Library.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Laundry notifications";
-            String description = "Laundry notifications description";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this.
-            assert context != null;
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(channel);
-        }
+        CharSequence name = "Laundry notifications";
+        String description = "Laundry notifications description";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this.
+        assert context != null;
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
     }
 }
