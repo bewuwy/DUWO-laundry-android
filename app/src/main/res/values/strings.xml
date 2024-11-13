@@ -34,6 +34,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_watcher">Watcher</string>
     <string name="error_while_fetching_status">Error while fetching status</string>
     <string name="balance">Balance:</string>
     <string name="euro">€</string>
