@@ -35,6 +35,8 @@ public class MultiPossScraper {
 
     private String exceptionString = "";
 
+    private HashMap<String, Integer> targets;
+
     public MultiPossScraper(String email, String password, String multipossURL) {
         this.phpSessionID = "";
         this.userEmail = email;
@@ -71,6 +73,14 @@ public class MultiPossScraper {
 
     public void setForceReInit(boolean forceReInit) {
         this.forceReInit = forceReInit;
+    }
+
+    public void setTargets(HashMap<String, Integer> targets) {
+        this.targets = targets;
+    }
+
+    public HashMap<String, Integer> getTargets() {
+        return targets;
     }
 
     public void initScraper() {

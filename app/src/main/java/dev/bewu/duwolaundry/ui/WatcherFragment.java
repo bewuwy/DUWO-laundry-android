@@ -19,8 +19,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.HashMap;
+
+import dev.bewu.duwolaundry.LaundryApplication;
+import dev.bewu.duwolaundry.MultiPossScraper;
 import dev.bewu.duwolaundry.R;
 import dev.bewu.duwolaundry.WatcherAlarmReceiver;
 
@@ -56,6 +61,24 @@ public class WatcherFragment extends Fragment {
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         startButton.setOnClickListener(v -> {
+
+            // get targets
+            EditText wm = requireActivity().findViewById(R.id.wmNumber);
+            EditText d = requireActivity().findViewById(R.id.dNumber);
+
+            int wmNumber = Integer.parseInt(wm.getText().toString());
+            int dNumber = Integer.parseInt(d.getText().toString());
+
+            HashMap<String, Integer> targets = new HashMap<>();
+            targets.put("Washing Machine", wmNumber);
+            targets.put("Dryer", dNumber);
+
+            // set targets
+            LaundryApplication application = (LaundryApplication) requireActivity().getApplication();
+            MultiPossScraper scraper = application.getMultiPossScraper();
+            scraper.setTargets(targets);
+
+            // set up alarm
             AlarmManager alarmMgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
 
             // cancel any previous alarms

@@ -21,8 +21,6 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
     private final int targetNotificationNumber = 2;
     private final String TARGET_CHANNEL_ID = "DUWO_Laundry_channel_target";
 
-    private final int washingMachineTarget = 0;  // TODO: add setting
-
     public WatcherAlarmReceiver() {}
 
     @Override
@@ -35,18 +33,29 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
         executor.execute(() -> {
             HashMap<String, Integer> availability = scraper.fetchAvailability();
 
-            if (availability.get("Washing Machine") >= washingMachineTarget) {
-                sendTargetReachedNotification(context);
+            HashMap<String, Integer> targets = scraper.getTargets();
+
+            boolean targetsMet = true;
+            for (String key: targets.keySet()) {
+                int target = targets.get(key);
+                int actual = availability.get(key);
+
+                if (actual < target) {
+                    targetsMet = false;
+                }
+            }
+            if (targetsMet) {
+                sendTargetReachedNotification(context, targets);
             }
 
             sendStatusNotification(context, availability);
         });
     }
 
-    private void sendTargetReachedNotification(Context context) {
+    private void sendTargetReachedNotification(Context context, HashMap<String, Integer> targets) {
         createTargetNotificationChannel(context);
 
-        String notificationString = "Reached your target! (" + washingMachineTarget + " washing machines)";
+        String notificationString = "Reached your target! " + targets;
 
         // create notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, TARGET_CHANNEL_ID)
