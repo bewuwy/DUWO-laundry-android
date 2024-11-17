@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             HashMap<String, Integer> availability = scraper.fetchAvailability();
-
             String qr = scraper.getQRCode();
 
             MultiPossScraper finalScraper = scraper;
@@ -166,6 +165,11 @@ public class MainActivity extends AppCompatActivity {
                             "Refreshed successfully!", Toast.LENGTH_SHORT).show();
                 } else {
                     statusText.setText(R.string.error_while_fetching_status);
+                }
+
+                if (!finalScraper.getExceptionString().isEmpty()) {
+                    Toast.makeText(this, finalScraper.getExceptionString(), Toast.LENGTH_LONG).show();
+                    statusText.setText(String.format("Error:\n%s", finalScraper.getExceptionString()));
                 }
             });
         });

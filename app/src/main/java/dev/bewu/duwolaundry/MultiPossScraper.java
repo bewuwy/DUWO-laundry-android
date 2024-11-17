@@ -33,6 +33,8 @@ public class MultiPossScraper {
 
     private boolean forceReInit = true;
 
+    private String exceptionString = "";
+
     public MultiPossScraper(String email, String password, String multipossURL) {
         this.phpSessionID = "";
         this.userEmail = email;
@@ -63,20 +65,30 @@ public class MultiPossScraper {
         return userLocation;
     }
 
+    public String getExceptionString() {
+        return exceptionString;
+    }
+
     public void setForceReInit(boolean forceReInit) {
         this.forceReInit = forceReInit;
     }
 
     public void initScraper() {
-        getPHPSession();
-        loginMultiposs();
-        initMultiposs();
+        try {
+            getPHPSession();
+            loginMultiposs();
+            initMultiposs();
+            exceptionString = "";
+        } catch (ScraperException e) {
+            Log.d("initScraper", e.toString());
+            exceptionString = e.toString();
+        }
     }
 
     public String getQRCode() {
         if (this.userEmail.isEmpty()) {
-            couldNotConnect("QR: No email set");
-            return "";
+            Log.d("getQRCode", "No email set");
+            return null;
         }
 
         OkHttpClient client = new OkHttpClient();
@@ -111,14 +123,14 @@ public class MultiPossScraper {
             return null;
 
         } catch (IOException e) {
-            couldNotConnect("Could not connect while fetching the QR code");
+            Log.d("getQRCode", "Could not connect");
             return null;
         }
     }
 
     public HashMap<String, Integer> fetchAvailability() {
         if (this.userEmail.isEmpty()) {
-            couldNotConnect("fetch: No email set");
+            Log.d("fetchAvailability", "No email set");
             return new HashMap<>();
         }
 
@@ -127,14 +139,18 @@ public class MultiPossScraper {
             forceReInit = false;
         }
 
-        return this.getAvailability();
+        try {
+            return this.getAvailability();
+        } catch (ScraperException e) {
+            return new HashMap<>();
+        }
     }
 
     /**
      * (4) Final step in fetching availability
      * @return HashMap of Machine->Number of available
      */
-    private HashMap<String, Integer> getAvailability() {
+    private HashMap<String, Integer> getAvailability() throws ScraperException {
 
         HashMap<String, Integer> availability = new HashMap<>();
 
@@ -191,7 +207,7 @@ public class MultiPossScraper {
     /**
      * (3) Third step in scraping multiposs
      */
-    private void initMultiposs() {
+    private void initMultiposs() throws ScraperException {
 
         // the multiposs id does not matter, as the building is determined by your account
         String reqUrl = String.format("%s/StartSite.php?ID=%s&UserID=%s",
@@ -230,7 +246,7 @@ public class MultiPossScraper {
     /**
      * (2) Second step in scraping multiposs
      */
-    private void loginMultiposs() {
+    private void loginMultiposs() throws ScraperException {
         // the password does not have to be correct
         String loginBody = "UserInput=" + this.userEmail + "&PwdInput=" + this.userPass;
 
@@ -282,7 +298,7 @@ public class MultiPossScraper {
     /**
      * (1) First step in scraping multiposs
      */
-    private void getPHPSession() {
+    private void getPHPSession() throws ScraperException {
 
         OkHttpClient client = new OkHttpClient();
 
@@ -310,8 +326,14 @@ public class MultiPossScraper {
      * Signal to user that there was an error while fetching
      * @param message error message
      */
-    private void couldNotConnect(String message) {
+    private void couldNotConnect(String message) throws ScraperException {
         Log.d("MultipossScraper", message);
+        throw new ScraperException(message);
     }
 
+    private class ScraperException extends Exception {
+        public ScraperException(String message) {
+            super(message);
+        }
+    }
 }
