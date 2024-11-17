@@ -36,4 +36,11 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="open_website">Open website</string>
+    <string name="prompt_multipossurl">MultiPoss URL</string>
+    <string name="prompt_email">E-mail</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="multipossurl_default">https://duwo.multiposs.nl</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="login">Login</string>
 </resources>

@@ -74,10 +74,15 @@ public class MultiPossScraper {
     }
 
     public String getQRCode() {
+        if (this.userEmail.isEmpty()) {
+            couldNotConnect("QR: No email set");
+            return "";
+        }
+
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://duwo.multiposs.nl/GenUserQrcode.php?GenNew=TRUE")
+                .url(multipossURL + "/GenUserQrcode.php?GenNew=TRUE")
                 .get()
                 .addHeader("Cookie", "PHPSESSID=" + this.phpSessionID)
                 .build();
@@ -112,6 +117,11 @@ public class MultiPossScraper {
     }
 
     public HashMap<String, Integer> fetchAvailability() {
+        if (this.userEmail.isEmpty()) {
+            couldNotConnect("fetch: No email set");
+            return new HashMap<>();
+        }
+
         if (forceReInit) {
             this.initScraper();
             forceReInit = false;
@@ -221,7 +231,6 @@ public class MultiPossScraper {
      * (2) Second step in scraping multiposs
      */
     private void loginMultiposs() {
-
         // the password does not have to be correct
         String loginBody = "UserInput=" + this.userEmail + "&PwdInput=" + this.userPass;
 
