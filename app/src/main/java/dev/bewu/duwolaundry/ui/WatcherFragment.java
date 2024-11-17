@@ -14,21 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import dev.bewu.duwolaundry.LaundryApplication;
-import dev.bewu.duwolaundry.MultiPossScraper;
 import dev.bewu.duwolaundry.R;
 import dev.bewu.duwolaundry.WatcherAlarmReceiver;
 
@@ -39,12 +31,7 @@ import dev.bewu.duwolaundry.WatcherAlarmReceiver;
  */
 public class WatcherFragment extends Fragment {
 
-    private final String CHANNEL_ID = "DUWO_Laundry_Channel";
-    private final int notificationNumber = 1;
-
-    public WatcherFragment() {
-        // Required empty public constructor
-    }
+    public WatcherFragment() {}
 
     /**
      * @return A new instance of fragment WatcherFragment.
@@ -71,11 +58,15 @@ public class WatcherFragment extends Fragment {
         startButton.setOnClickListener(v -> {
             AlarmManager alarmMgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
 
+            // cancel any previous alarms
+            alarmMgr.cancel(alarmIntent);
+
             // set up the update alarm - every 1 minute
             alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                     5000, 60000, alarmIntent);
             Log.d("Laundry Watcher", "watcher started");
             Toast.makeText(getContext(), "Watcher started", Toast.LENGTH_SHORT).show();
+
         });
 
         stopButton.setOnClickListener(v -> {

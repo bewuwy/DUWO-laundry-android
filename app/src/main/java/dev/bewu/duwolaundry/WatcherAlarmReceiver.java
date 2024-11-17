@@ -5,9 +5,7 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -17,12 +15,15 @@ import java.util.concurrent.Executors;
 
 public class WatcherAlarmReceiver extends BroadcastReceiver {
 
-    private final int notificationNumber = 1;
-    private final String CHANNEL_ID = "DUWO_Laundry_channel";
+    private final int statusNotificationNumber = 1;
+    private final String STATUS_CHANNEL_ID = "DUWO_Laundry_channel_status";
 
-    public WatcherAlarmReceiver() {
+    private final int targetNotificationNumber = 2;
+    private final String TARGET_CHANNEL_ID = "DUWO_Laundry_channel_target";
 
-    }
+    private final int washingMachineTarget = 0;  // TODO: add setting
+
+    public WatcherAlarmReceiver() {}
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -34,42 +35,82 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
         executor.execute(() -> {
             HashMap<String, Integer> availability = scraper.fetchAvailability();
 
-            createNotificationChannel(context);
-
-            StringBuilder notificationStringBuilder = new StringBuilder();
-            for (String key: availability.keySet()) {
-                notificationStringBuilder.append(availability.get(key)).append(" ").append(key);
-
-                if (availability.get(key) != 1) {
-                    notificationStringBuilder.append("s, ");
-                } else {
-                    notificationStringBuilder.append(", ");
-                }
+            if (availability.get("Washing Machine") >= washingMachineTarget) {
+                sendTargetReachedNotification(context);
             }
 
-            // remove last ", "
-            String notificationString = notificationStringBuilder.toString();
-            notificationString = notificationString.substring(0, notificationString.length()-2);
-
-            // create notification
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.laundry_24)
-                    .setContentTitle("DUWO Laundry")
-                    .setContentText(notificationString)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-            // send notification
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(notificationNumber, builder.build());
-            // notificationNumber++; // don't update - then the old notification will be updated
+            sendStatusNotification(context, availability);
         });
     }
 
-    private void createNotificationChannel(Context context) {
-        CharSequence name = "Laundry notifications";
-        String description = "Laundry notifications description";
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+    private void sendTargetReachedNotification(Context context) {
+        createTargetNotificationChannel(context);
+
+        String notificationString = "Reached your target! (" + washingMachineTarget + " washing machines)";
+
+        // create notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, TARGET_CHANNEL_ID)
+                .setSmallIcon(R.drawable.laundry_24)
+                .setContentTitle("Laundry Target Reached")
+                .setContentText(notificationString)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        // send notification
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(targetNotificationNumber, builder.build());
+    }
+
+    private void sendStatusNotification(Context context, HashMap<String, Integer> availability) {
+        createStatusNotificationChannel(context);
+
+        StringBuilder notificationStringBuilder = new StringBuilder();
+        for (HashMap.Entry<String, Integer> entry : availability.entrySet()) {
+            String key = entry.getKey();
+            int val = entry.getValue();
+
+            notificationStringBuilder.append(val).append(" ").append(key);
+
+            if (val != 1) {
+                notificationStringBuilder.append("s, ");
+            } else {
+                notificationStringBuilder.append(", ");
+            }
+        }
+
+        // remove last ", "
+        String notificationString = notificationStringBuilder.toString();
+        notificationString = notificationString.substring(0, notificationString.length()-2);
+
+        // create notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, STATUS_CHANNEL_ID)
+                .setSmallIcon(R.drawable.laundry_24)
+                .setContentTitle("Laundry Status")
+                .setContentText(notificationString)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        // send notification
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(statusNotificationNumber, builder.build());
+    }
+
+    private void createStatusNotificationChannel(Context context) {
+        CharSequence name = "Laundry status notifications";
+        String description = "Availability status";
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel channel = new NotificationChannel(STATUS_CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this.
+        assert context != null;
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
+    }
+
+    private void createTargetNotificationChannel(Context context) {
+        CharSequence name = "Laundry target notifications";
+        String description = "Availability target reached";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel = new NotificationChannel(TARGET_CHANNEL_ID, name, importance);
         channel.setDescription(description);
         // Register the channel with the system; you can't change the importance
         // or other notification behaviors after this.
