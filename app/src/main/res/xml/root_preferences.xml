@@ -11,6 +11,9 @@
             app:title="Multiposs Password"
             app:defaultValue="..." />
 
+        <Preference
+            app:title="Sign out"
+            app:key="signOut" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Multiposs server">

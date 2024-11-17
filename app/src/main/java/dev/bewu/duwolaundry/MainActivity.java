@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         // check if login is setup - if none open LoginFragment
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!preferences.contains("userMail")) {
+        if (!preferences.contains("userMail") || preferences.getString("userMail", "").isEmpty()) {
             Log.d("MainActivity", "no mail set, opening login activity");
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivity(loginIntent);
