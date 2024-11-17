@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DUWO laundry</string>
+    <string name="app_name">DUWO Laundry</string>
     <string name="duwo_laundry_title">DUWO Laundry</string>
     <string name="refresh">Refresh</string>
     <string name="current_status">Available:</string>
