@@ -44,11 +44,17 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.appBarMainActivityNavDrawer.toolbar);
         binding.appBarMainActivityNavDrawer.floatingRefresh.setOnClickListener(v -> {
-
             Toast.makeText(getApplicationContext(),
                     "Refreshing...", Toast.LENGTH_SHORT).show();
 
-            updateAvailability();
+            updateAvailability(false);
+        });
+        binding.appBarMainActivityNavDrawer.floatingRefresh.setOnLongClickListener(v -> {
+            Toast.makeText(getApplicationContext(),
+                    "(Hard) refreshing...", Toast.LENGTH_SHORT).show();
+
+            updateAvailability(true);
+            return true;
         });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
-    public void updateAvailability() {
+    public void updateAvailability(boolean hardRefresh) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
@@ -72,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "multipossURL: " + preferences.getString("multipossURL", ""));
 
             MultiPossScraper scraper = ((LaundryApplication) this.getApplication()).getMultiPossScraper();
-
             if (scraper == null) {
                 // initialise scraper
                 scraper = new MultiPossScraper(
@@ -81,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
                         preferences.getString("multipossURL", "https://duwo.multiposs.nl")
                 );
                 ((LaundryApplication) this.getApplication()).setMultiPossScraper(scraper);
+            }
+
+            if (hardRefresh) {
+                scraper.setForceReInit(true);
             }
 
             HashMap<String, Integer> availability = scraper.fetchAvailability();

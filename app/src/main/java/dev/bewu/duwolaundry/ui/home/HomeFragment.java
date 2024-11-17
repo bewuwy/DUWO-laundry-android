@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         assert getActivity() != null;
-        ((MainActivity) getActivity()).updateAvailability();
+        ((MainActivity) getActivity()).updateAvailability(false);
 
         return binding.getRoot();
     }
