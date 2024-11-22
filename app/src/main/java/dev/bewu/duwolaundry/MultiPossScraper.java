@@ -40,7 +40,11 @@ public class MultiPossScraper {
     public MultiPossScraper(String email, String password, String multipossURL) {
         this.phpSessionID = "";
         this.userEmail = email;
-        this.userPass = password;
+        if (password.isEmpty()) {
+            this.userPass = "INCORRECT"; // so that something is always sent in the requests
+        } else {
+            this.userPass = password;
+        }
         this.multipossURL = multipossURL;
     }
 

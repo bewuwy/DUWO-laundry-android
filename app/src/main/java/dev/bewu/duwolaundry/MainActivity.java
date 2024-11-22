@@ -1,5 +1,6 @@
 package dev.bewu.duwolaundry;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -126,6 +128,27 @@ public class MainActivity extends AppCompatActivity {
             }
 
             HashMap<String, Integer> availability = scraper.fetchAvailability();
+
+            // check if there is an account associated with the email
+            if (scraper.getUserLocation() == null) {
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.remove("userMail");
+                editor.apply();
+
+                handler.post(() -> {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Could not log in")
+                            .setMessage("Incorrect email address!\nCould not find any Multiposs account associated with it.")
+                            .setPositiveButton("Sign out", (dialogInterface, i) -> {
+
+                                Intent loginIntent = new Intent(this, LoginActivity.class);
+                                startActivity(loginIntent);
+                            })
+                            .show();
+                });
+            }
+
             String qr = scraper.getQRCode();
 
             MultiPossScraper finalScraper = scraper;
