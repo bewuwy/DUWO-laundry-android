@@ -42,7 +42,8 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="multipossurl_default">https://duwo.multiposs.nl</string>
     <string name="action_sign_in">Sign in</string>
-    <string name="login">Login</string>
+    <string name="login">Sign in to Multiposs</string>
     <string name="washing_machines">Washing Machines:</string>
     <string name="dryers">Dryers:</string>
+    <string name="info">Info</string>
 </resources>

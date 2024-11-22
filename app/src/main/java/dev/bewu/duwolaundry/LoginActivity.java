@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -34,6 +35,11 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         loginButton.setOnClickListener(v -> {
+            if (email.getText().toString().isEmpty()) {
+                email.setError("E-mail is required");
+                return;
+            }
+
             String e = email.getText().toString();
             String p = password.getText().toString();
             String m = mutlipossURL.getText().toString();
@@ -58,5 +64,16 @@ public class LoginActivity extends AppCompatActivity {
             Intent mainIntent = new Intent(this, MainActivity.class);
             startActivity(mainIntent);
         });
+
+        Button infoButton = findViewById(R.id.info);
+        infoButton.setOnClickListener(v -> {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Logging in")
+                    .setMessage("In order to use the app you need to login to your Multiposs account. Your password is stored only on your device.\n\nYou can also login without providing a password! (Some of the app features will be missing then)")
+                    .setPositiveButton("Ok", null)
+                    .show();
+        });
+
     }
 }
