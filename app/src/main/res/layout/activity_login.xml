@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="#00FFFFFF"
             android:text="@string/info"
             android:textColor="#673AB7"
             app:strokeColor="#673AB7"
