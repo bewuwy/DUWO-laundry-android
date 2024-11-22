@@ -132,15 +132,14 @@ public class MainActivity extends AppCompatActivity {
             // check if there is an account associated with the email
             if (scraper.getUserLocation() == null) {
 
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.remove("userMail");
-                editor.apply();
-
                 handler.post(() -> {
                     new AlertDialog.Builder(this)
                             .setTitle("Could not log in")
                             .setMessage("Incorrect email address!\nCould not find any Multiposs account associated with it.")
                             .setPositiveButton("Sign out", (dialogInterface, i) -> {
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.remove("userMail");
+                                editor.apply();
 
                                 Intent loginIntent = new Intent(this, LoginActivity.class);
                                 startActivity(loginIntent);

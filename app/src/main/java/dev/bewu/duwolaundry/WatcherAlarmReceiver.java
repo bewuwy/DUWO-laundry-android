@@ -1,7 +1,10 @@
 package dev.bewu.duwolaundry;
 
+import static android.app.Notification.EXTRA_NOTIFICATION_ID;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,8 +40,15 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
 
             boolean targetsMet = true;
             for (String key: targets.keySet()) {
-                int target = targets.get(key);
-                int actual = availability.get(key);
+                int target;
+                int actual;
+                try {
+                    target = targets.get(key);
+                    actual = availability.get(key);
+                } catch (NullPointerException e) {
+                    Log.d("Watcher Alarm", "Null pointer when checking targets");
+                    return;
+                }
 
                 if (actual < target) {
                     targetsMet = false;
@@ -90,12 +100,18 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
         String notificationString = notificationStringBuilder.toString();
         notificationString = notificationString.substring(0, notificationString.length()-2);
 
+        Intent stopWatcherIntent = new Intent(context, WatcherStopReceiver.class);
+        stopWatcherIntent.setAction("stop");
+        stopWatcherIntent.putExtra(EXTRA_NOTIFICATION_ID, 0);
+        PendingIntent stopWatcherPendingIntent = PendingIntent.getBroadcast(context, 0, stopWatcherIntent, PendingIntent.FLAG_IMMUTABLE);
+
         // create notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, STATUS_CHANNEL_ID)
                 .setSmallIcon(R.drawable.laundry_24)
                 .setContentTitle("Laundry Status")
                 .setContentText(notificationString)
-                .setPriority(NotificationCompat.PRIORITY_LOW);
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .addAction(R.drawable.laundry_24, "Stop", stopWatcherPendingIntent);
 
         // send notification
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

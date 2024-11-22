@@ -1,5 +1,6 @@
 package dev.bewu.duwolaundry.ui;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,8 +10,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
@@ -36,6 +40,8 @@ import dev.bewu.duwolaundry.WatcherAlarmReceiver;
  */
 public class WatcherFragment extends Fragment {
 
+    private ActivityResultLauncher<String> requestPermissionLauncher;
+
     public WatcherFragment() {}
 
     /**
@@ -48,6 +54,13 @@ public class WatcherFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // create permissions launcher
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (!isGranted) {
+                Log.d("Watcher", "no notification permissions");
+            }
+        });
     }
 
     @Override
@@ -90,6 +103,13 @@ public class WatcherFragment extends Fragment {
             Log.d("Laundry Watcher", "watcher started");
             Toast.makeText(getContext(), "Watcher started", Toast.LENGTH_SHORT).show();
 
+            NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            if (!notificationManager.areNotificationsEnabled()) {
+                // ask for notification permissions
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                }
+            }
         });
 
         stopButton.setOnClickListener(v -> {
