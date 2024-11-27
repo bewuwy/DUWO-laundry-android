@@ -40,6 +40,11 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+            if (!email.getText().toString().matches("^[\\w\\-.]+@([\\w-]+\\.)+[\\w-]{2,}$")) {
+                email.setError("Invalid e-mail");
+                return;
+            }
+
             String e = email.getText().toString();
             String p = password.getText().toString();
             String m = mutlipossURL.getText().toString();
