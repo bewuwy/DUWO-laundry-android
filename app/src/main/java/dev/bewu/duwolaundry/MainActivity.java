@@ -20,6 +20,7 @@ import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 handler.post(() -> {
                     new AlertDialog.Builder(this)
                             .setTitle("Could not log in")
-                            .setMessage("Incorrect email address!\nCould not find any Multiposs account associated with it.")
+                            .setMessage("Incorrect email address!\n\nCould not find any Multiposs account associated with it.")
                             .setPositiveButton("Sign out", (dialogInterface, i) -> {
                                 SharedPreferences.Editor editor = preferences.edit();
                                 editor.remove("userMail");
@@ -144,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent loginIntent = new Intent(this, LoginActivity.class);
                                 startActivity(loginIntent);
                             })
+                            .setNegativeButton("Try again", null)
                             .show();
                 });
             }
@@ -154,9 +156,18 @@ public class MainActivity extends AppCompatActivity {
             handler.post(() -> {
                 //UI Thread work here
 
-                TextView statusText = findViewById(R.id.statusTextView);
-                TextView balanceValueText = findViewById(R.id.balanceValue);
-                View balanceLayout = findViewById(R.id.balanceLayout);
+                if (!finalScraper.getExceptionString().isEmpty()) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Error")
+                            .setMessage(finalScraper.getExceptionString())
+                            .setPositiveButton("Ok", null)
+                            .show();
+                }
+
+                TextView wm_statusText = findViewById(R.id.wm_available);
+                TextView d_statusText = findViewById(R.id.dryer_available);
+                TextView qr_info = findViewById(R.id.qrInfo);
+                TextView balanceText = findViewById(R.id.balanceText);
                 TextView userBigText = findViewById(R.id.userBigText);
                 TextView userSmallText = findViewById(R.id.userSmallText);
 
@@ -164,35 +175,48 @@ public class MainActivity extends AppCompatActivity {
                         getString(R.string.multiposs), finalScraper.getUserLocation()));
                 userSmallText.setText(finalScraper.getUserEmail());
 
-                if (statusText == null)
+                if (wm_statusText == null)
                     return;
 
-                StringBuilder availabilityString = new StringBuilder();
-                for (String machine: availability.keySet()) {
-                    availabilityString.append(machine).append(": ")
-                            .append(availability.get(machine)).append("\n");
+                if (availability == null || !availability.containsKey("Washing Machine") || !availability.containsKey("Dryer")) {
+                    Toast.makeText(this, "Could not fetch availability", Toast.LENGTH_LONG).show();;
+                    return;
                 }
 
-                String avString = availabilityString.toString();
+                int wm_status = availability.get("Washing Machine");
+                int d_status = availability.get("Dryer");
 
-                if (!avString.isEmpty()) {
-                    statusText.setText(avString);
-                    balanceValueText.setText(finalScraper.getUserBalance());
-                    if (finalScraper.getUserBalance() != null) {
-                        balanceLayout.setVisibility(View.VISIBLE);
-                    }
-                    setQRCode(qr);
-
-                    Toast.makeText(getApplicationContext(),
-                            "Refreshed successfully!", Toast.LENGTH_SHORT).show();
+                if (wm_status > 0) {
+                    wm_statusText.setText(String.format("%s %s", wm_status, getString(R.string.available)));
+                    wm_statusText.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.green_bg));
+                    wm_statusText.setTextColor(ContextCompat.getColor(this, R.color.green_fg));
                 } else {
-                    statusText.setText(R.string.error_while_fetching_status);
+                    wm_statusText.setText(R.string.unavailable);
+                    wm_statusText.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red_bg));
+                    wm_statusText.setTextColor(ContextCompat.getColor(this, R.color.red_fg));
                 }
 
-                if (!finalScraper.getExceptionString().isEmpty()) {
-                    Toast.makeText(this, finalScraper.getExceptionString(), Toast.LENGTH_LONG).show();
-                    statusText.setText(String.format("Error:\n%s", finalScraper.getExceptionString()));
+                if (d_status > 0) {
+                    d_statusText.setText(String.format("%s %s", d_status, getString(R.string.available)));
+                    d_statusText.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.green_bg));
+                    d_statusText.setTextColor(ContextCompat.getColor(this, R.color.green_fg));
+                } else {
+                    d_statusText.setText(R.string.unavailable);
+                    d_statusText.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red_bg));
+                    d_statusText.setTextColor(ContextCompat.getColor(this, R.color.red_fg));
                 }
+
+                if (finalScraper.getUserBalance() != null) {
+                    balanceText.setText(String.format("%s %s€", getString(R.string.balance), finalScraper.getUserBalance()));
+                } else {
+                    balanceText.setText(R.string.account_unauthorized);
+                }
+
+                setQRCode(qr);
+                qr_info.setText(R.string.click_enlarge);
+
+                Toast.makeText(getApplicationContext(),
+                        "Refreshed successfully!", Toast.LENGTH_SHORT).show();
             });
         });
     }

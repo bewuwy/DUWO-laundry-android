@@ -156,6 +156,7 @@ public class MultiPossScraper {
         try {
             return this.getAvailability();
         } catch (ScraperException e) {
+            exceptionString = e.toString();
             return new HashMap<>();
         }
     }
@@ -165,7 +166,6 @@ public class MultiPossScraper {
      * @return HashMap of Machine->Number of available
      */
     private HashMap<String, Integer> getAvailability() throws ScraperException {
-
         HashMap<String, Integer> availability = new HashMap<>();
 
         OkHttpClient client = new OkHttpClient();
