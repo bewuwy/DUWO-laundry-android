@@ -20,6 +20,7 @@ import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -154,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
             handler.post(() -> {
                 //UI Thread work here
 
-                TextView statusText = findViewById(R.id.statusTextView);
+                TextView wm_statusText = findViewById(R.id.wm_available);
+                TextView d_statusText = findViewById(R.id.dryer_available);
                 TextView balanceValueText = findViewById(R.id.balanceValue);
                 View balanceLayout = findViewById(R.id.balanceLayout);
                 TextView userBigText = findViewById(R.id.userBigText);
@@ -164,34 +166,46 @@ public class MainActivity extends AppCompatActivity {
                         getString(R.string.multiposs), finalScraper.getUserLocation()));
                 userSmallText.setText(finalScraper.getUserEmail());
 
-                if (statusText == null)
+                if (wm_statusText == null)
                     return;
 
-                StringBuilder availabilityString = new StringBuilder();
-                for (String machine: availability.keySet()) {
-                    availabilityString.append(machine).append(": ")
-                            .append(availability.get(machine)).append("\n");
-                }
+                int wm_status = availability.get("Washing Machine");
+                int d_status = availability.get("Dryer");
 
-                String avString = availabilityString.toString();
-
-                if (!avString.isEmpty()) {
-                    statusText.setText(avString);
-                    balanceValueText.setText(finalScraper.getUserBalance());
-                    if (finalScraper.getUserBalance() != null) {
-                        balanceLayout.setVisibility(View.VISIBLE);
-                    }
-                    setQRCode(qr);
-
-                    Toast.makeText(getApplicationContext(),
-                            "Refreshed successfully!", Toast.LENGTH_SHORT).show();
+                if (wm_status > 0) {
+                    wm_statusText.setText(String.format("%s %s", wm_status, getString(R.string.available)));
+                    wm_statusText.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.green_bg));
+                    wm_statusText.setTextColor(ContextCompat.getColor(this, R.color.green_fg));
                 } else {
-                    statusText.setText(R.string.error_while_fetching_status);
+                    wm_statusText.setText(R.string.unavailable);
+                    wm_statusText.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red_bg));
+                    wm_statusText.setTextColor(ContextCompat.getColor(this, R.color.red_fg));
                 }
+
+                if (d_status > 0) {
+                    d_statusText.setText(String.format("%s %s", d_status, getString(R.string.available)));
+                    d_statusText.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.green_bg));
+                    d_statusText.setTextColor(ContextCompat.getColor(this, R.color.green_fg));
+                } else {
+                    d_statusText.setText(R.string.unavailable);
+                    d_statusText.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red_bg));
+                    d_statusText.setTextColor(ContextCompat.getColor(this, R.color.red_fg));
+                }
+
+                balanceValueText.setText(finalScraper.getUserBalance());
+                if (finalScraper.getUserBalance() != null) {
+                    balanceLayout.setVisibility(View.VISIBLE);
+                }
+                setQRCode(qr);
+
+                Toast.makeText(getApplicationContext(),
+                        "Refreshed successfully!", Toast.LENGTH_SHORT).show();
+
+                // TODO: (better) error fetching availability information
 
                 if (!finalScraper.getExceptionString().isEmpty()) {
                     Toast.makeText(this, finalScraper.getExceptionString(), Toast.LENGTH_LONG).show();
-                    statusText.setText(String.format("Error:\n%s", finalScraper.getExceptionString()));
+//                    statusText.setText(String.format("Error:\n%s", finalScraper.getExceptionString()));
                 }
             });
         });

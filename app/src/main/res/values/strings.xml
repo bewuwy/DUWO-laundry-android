@@ -2,7 +2,8 @@
     <string name="app_name">DUWO Laundry</string>
     <string name="duwo_laundry_title">DUWO Laundry</string>
     <string name="refresh">Refresh</string>
-    <string name="current_status">Available:</string>
+    <string name="current_status">Available machines</string>
+    <string name="pay_label">Pay with QR</string>
     <string name="loading">Loading…</string>
     <string name="qr_code_to_scan">QR code to scan</string>
     <string name="settings">Settings</string>
@@ -27,7 +28,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_watcher">Watcher</string>
     <string name="error_while_fetching_status">Error while fetching status</string>
-    <string name="balance">Balance:</string>
+    <string name="balance">Your balance:</string>
     <string name="euro">€</string>
 
     <string name="dots">…</string>
@@ -46,4 +47,9 @@
     <string name="washing_machines">Washing Machines:</string>
     <string name="dryers">Dryers:</string>
     <string name="info">Info</string>
+
+    <string name="washing_machine">Washing Machine</string>
+    <string name="dryer">Dryer</string>
+    <string name="available">available</string>
+    <string name="unavailable">Unavailable</string>
 </resources>
