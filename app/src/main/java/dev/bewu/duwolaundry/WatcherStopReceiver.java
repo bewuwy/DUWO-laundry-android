@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 public class WatcherStopReceiver extends BroadcastReceiver {
 
@@ -22,6 +23,7 @@ public class WatcherStopReceiver extends BroadcastReceiver {
 
         if (alarmMgr!= null) {
             alarmMgr.cancel(alarmIntent);
+            Toast.makeText(context, "Laundry watcher stopped", Toast.LENGTH_LONG).show();
             Log.d("WatcherStop", "watcher stopped");
         }
     }

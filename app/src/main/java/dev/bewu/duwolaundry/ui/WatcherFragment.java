@@ -2,7 +2,6 @@ package dev.bewu.duwolaundry.ui;
 
 import android.Manifest;
 import android.app.AlarmManager;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -14,8 +13,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -74,6 +71,13 @@ public class WatcherFragment extends Fragment {
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         startButton.setOnClickListener(v -> {
+            NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            if (!notificationManager.areNotificationsEnabled()) {
+                // ask for notification permissions
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                }
+            }
 
             // get targets
             EditText wm = requireActivity().findViewById(R.id.wmNumber);
@@ -101,15 +105,7 @@ public class WatcherFragment extends Fragment {
             alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                     5000, 60000, alarmIntent);
             Log.d("Laundry Watcher", "watcher started");
-            Toast.makeText(getContext(), "Watcher started", Toast.LENGTH_SHORT).show();
-
-            NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            if (!notificationManager.areNotificationsEnabled()) {
-                // ask for notification permissions
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-                }
-            }
+            Toast.makeText(getContext(), "Laundry watcher started", Toast.LENGTH_SHORT).show();
         });
 
         stopButton.setOnClickListener(v -> {

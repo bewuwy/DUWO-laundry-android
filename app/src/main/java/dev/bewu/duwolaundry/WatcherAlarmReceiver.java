@@ -2,6 +2,7 @@ package dev.bewu.duwolaundry;
 
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -29,6 +31,20 @@ public class WatcherAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("Watcher Alarm", "Alarm went off");
+
+        // check if notifications enabled
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (!notificationManager.areNotificationsEnabled()) {
+            Toast.makeText(context, "Laundry watcher stopped: Missing notification permissions!", Toast.LENGTH_LONG).show();
+
+            // cancel the alarm
+            AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent watcherIntent = new Intent(context, WatcherAlarmReceiver.class);
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, watcherIntent, PendingIntent.FLAG_IMMUTABLE);
+            alarmMgr.cancel(alarmIntent);
+
+            return;
+        }
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         MultiPossScraper scraper = ((LaundryApplication) context.getApplicationContext()).getMultiPossScraper();
