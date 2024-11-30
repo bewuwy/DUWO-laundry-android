@@ -7,31 +7,14 @@
     <string name="loading">Loading…</string>
     <string name="qr_code_to_scan">QR code to scan</string>
     <string name="settings">Settings</string>
-    <!-- Settings Activity Title -->
 
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_watcher">Notify</string>
-    <string name="error_while_fetching_status">Error while fetching status</string>
     <string name="balance">Your balance:</string>
     <string name="account_unauthorized">Passwordless login</string>
 
-    <string name="dots">…</string>
     <string name="multiposs">Multiposs</string>
     <string name="watcher_desc">Notify when availability reaches the goal:</string>
     <string name="start">Start</string>
@@ -40,7 +23,6 @@
     <string name="prompt_multipossurl">MultiPoss URL</string>
     <string name="prompt_email">E-mail</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in_short">Sign in</string>
     <string name="multipossurl_default">https://duwo.multiposs.nl</string>
     <string name="action_sign_in">Sign in</string>
     <string name="login">Sign in to Multiposs</string>
