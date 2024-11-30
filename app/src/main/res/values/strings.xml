@@ -26,14 +26,14 @@
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_watcher">Watcher</string>
+    <string name="menu_watcher">Notify</string>
     <string name="error_while_fetching_status">Error while fetching status</string>
     <string name="balance">Your balance:</string>
     <string name="account_unauthorized">Passwordless login</string>
 
     <string name="dots">…</string>
     <string name="multiposs">Multiposs</string>
-    <string name="watch_for_availability_updates">Watch for availability updates</string>
+    <string name="watcher_desc">Notify when availability reaches the goal:</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="open_website">Open website</string>

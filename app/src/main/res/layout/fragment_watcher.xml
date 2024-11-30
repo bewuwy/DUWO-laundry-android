@@ -10,42 +10,11 @@
         android:id="@+id/watcherLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/watch_for_availability_updates"
+        android:layout_marginTop="32dp"
+        android:text="@string/watcher_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/buttons"
-        style="?android:attr/buttonBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout">
-
-        <Button
-            android:id="@+id/watcherStartButton"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:backgroundTint="#4CAF50"
-            android:text="@string/start"
-            android:textColor="@color/white" />
-
-        <Button
-            android:id="@+id/watcherStopButton"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#FF5722"
-            android:text="@string/stop"
-            android:textColor="@color/white" />
-    </LinearLayout>
 
     <TableLayout
         android:id="@+id/tableLayout"
@@ -101,5 +70,36 @@
         </TableRow>
 
     </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout">
+
+        <Button
+            android:id="@+id/watcherStartButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="#4CAF50"
+            android:text="@string/start"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/watcherStopButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FF5722"
+            android:text="@string/stop"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout >
