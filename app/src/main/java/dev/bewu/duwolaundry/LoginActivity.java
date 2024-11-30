@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
             new AlertDialog.Builder(this)
                     .setTitle("Logging in")
-                    .setMessage("In order to use the app you need to login to your Multiposs account. Your password is stored only on your device.\n\nYou can also login without providing a password! (Some of the app features will be missing then)")
+                    .setMessage(getString(R.string.login_info))
                     .setPositiveButton("Ok", null)
                     .show();
         });

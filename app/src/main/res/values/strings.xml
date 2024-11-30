@@ -37,4 +37,6 @@
 
     <string name="click_enlarge">Click the QR code to expand it</string>
     <string name="qr_loading">Generating the QR code…</string>
+
+    <string name="login_info">In order to use the app you need to login to your Multiposs account. Your password is stored only on your device.\n\nYou can also login without providing a password. (Some of the app features will be missing then and you *might* get temporarily blocked from MultiPoss website after too many passwordless login requests)</string>
 </resources>
