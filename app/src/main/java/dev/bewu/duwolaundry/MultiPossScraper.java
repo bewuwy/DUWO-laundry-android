@@ -162,9 +162,19 @@ public class MultiPossScraper {
             Element bookingTable = doc.selectFirst("#BookingTable > table.ColorTable");
             assert bookingTable != null;
 
-            for (Element btRow: bookingTable.children()) {
+            for (Element btRow: bookingTable.select("tr")) {
+                if (btRow.text().contains("Date Time Loc. machine")) {
+                    continue;
+                }
                 Log.d("fetchBookings", "Booking table Row: " + btRow.text());
-                bookings.add(btRow.text());
+
+                String date = btRow.child(0).text();
+                String hour = btRow.child(1).text();
+                String machine = btRow.child(3).text();
+                boolean finished = btRow.child(3).select("p").hasClass("BookingFinished");
+                String bInfo = String.format("%s at %s (%s) finished: %s", date, hour, machine, finished);
+                Log.d("fetchBookings", bInfo);
+                bookings.add(bInfo);
             }
 
         } catch (IOException e) {

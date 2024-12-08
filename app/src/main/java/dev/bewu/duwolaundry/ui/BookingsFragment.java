@@ -51,16 +51,17 @@ public class BookingsFragment extends Fragment {
         executor.execute(() -> {
 
             List<String> bookings = scraper.fetchBookings();
-            String bookingsString = String.join("\n\n", bookings);
+            String bookingsString;
             if (bookings.isEmpty()) {
                 bookingsString = getString(R.string.no_bookings);
+            } else {
+                bookingsString = String.join("\n\n", bookings);
             }
 
-            String finalBookingsString = bookingsString;
             handler.post(() -> {
 
                 TextView bookingsText = requireActivity().findViewById(R.id.bookingsText);
-                bookingsText.setText(finalBookingsString);
+                bookingsText.setText(bookingsString);
             });
         });
     }
