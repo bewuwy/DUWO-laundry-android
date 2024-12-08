@@ -13,6 +13,10 @@
             android:icon="@drawable/notification_24"
             android:title="@string/menu_watcher" />
         <item
+            android:id="@+id/nav_bookings"
+            android:icon="@drawable/calendar_24"
+            android:title="@string/bookings" />
+        <item
             android:id="@+id/nav_website"
             android:icon="@drawable/open_external"
             android:title="@string/open_website" />

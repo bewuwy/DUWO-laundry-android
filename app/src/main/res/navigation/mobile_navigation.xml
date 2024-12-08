@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_watcher" />
 
     <fragment
+        android:id="@+id/nav_bookings"
+        android:name="dev.bewu.duwolaundry.ui.BookingsFragment"
+        android:label="@string/bookings"
+        tools:layout="@layout/fragment_bookings" />
+
+    <fragment
         android:id="@+id/nav_settings"
         android:name="dev.bewu.duwolaundry.ui.SettingsFragment"
         android:label="@string/settings" />
