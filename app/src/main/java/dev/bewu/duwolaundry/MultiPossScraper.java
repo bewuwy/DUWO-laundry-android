@@ -14,6 +14,7 @@ import okhttp3.Response;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -140,6 +141,38 @@ public class MultiPossScraper {
             Log.d("getQRCode", "Could not connect");
             return null;
         }
+    }
+
+    public List<String> fetchBookings() {
+        List<String> bookings = new ArrayList<>();
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(multipossURL + "/BookingOverview.php")
+                .get()
+                .addHeader("Cookie", "PHPSESSID=" + this.phpSessionID)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+
+            assert response.body() != null;
+            Document doc = Jsoup.parse(response.body().string());
+
+            Element bookingTable = doc.selectFirst("#BookingTable > table.ColorTable");
+            assert bookingTable != null;
+
+            for (Element btRow: bookingTable.children()) {
+                Log.d("fetchBookings", "Booking table Row: " + btRow.text());
+                bookings.add(btRow.text());
+            }
+
+        } catch (IOException e) {
+            Log.d("fetchBookings", "IOException");
+            return null;
+        }
+
+        return bookings;
     }
 
     public HashMap<String, Integer> fetchAvailability() {
